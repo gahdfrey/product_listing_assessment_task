@@ -42,7 +42,7 @@ export default function Home() {
   });
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto p-8">
       <h1 className="text-2xl font-bold mb-4">Products</h1>
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Filter Products</h2>

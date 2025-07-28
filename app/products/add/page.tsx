@@ -23,6 +23,7 @@ const AddProduct: React.FC = () => {
     image: "",
   });
   const [file, setFile] = useState<File | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const addProduct = useProductStore((state) => state.addProduct);
   const router = useRouter();
 
@@ -63,6 +64,8 @@ const AddProduct: React.FC = () => {
       toast.error("Please select an image file.");
       return;
     }
+
+    setIsCreating(true);
     let imagePath = "";
     try {
       const formDataToSend = new FormData();
@@ -80,6 +83,7 @@ const AddProduct: React.FC = () => {
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Failed to upload image.");
+      setIsCreating(false);
       return;
     }
     try {
@@ -95,6 +99,8 @@ const AddProduct: React.FC = () => {
     } catch (error) {
       console.error("Failed to add product:", error);
       toast.error("Failed to add product.");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -110,6 +116,7 @@ const AddProduct: React.FC = () => {
           placeholder="Product Name"
           className="border p-2 rounded"
           required
+          disabled={isCreating}
         />
         <textarea
           name="description"
@@ -118,6 +125,7 @@ const AddProduct: React.FC = () => {
           placeholder="Description"
           className="border p-2 rounded"
           required
+          disabled={isCreating}
         />
         <input
           type="number"
@@ -129,6 +137,7 @@ const AddProduct: React.FC = () => {
           min="0"
           step="0.01"
           required
+          disabled={isCreating}
         />
         <select
           name="category"
@@ -136,6 +145,7 @@ const AddProduct: React.FC = () => {
           onChange={handleChange}
           className="border p-2 rounded"
           required
+          disabled={isCreating}
         >
           <option value="">Select Category</option>
           {CATEGORIES.map((cat) => (
@@ -159,6 +169,7 @@ const AddProduct: React.FC = () => {
             onChange={handleFileChange}
             className="border p-2 rounded w-full mt-1"
             required
+            disabled={isCreating}
           />
           {file && (
             <p className="mt-1 text-sm text-gray-600">Selected: {file.name}</p>
@@ -166,9 +177,14 @@ const AddProduct: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          disabled={isCreating}
+          className={`px-4 py-2 rounded text-white ${
+            isCreating
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
-          Add Product
+          {isCreating ? "Creating product..." : "Add Product"}
         </button>
       </form>
     </div>
